@@ -1,0 +1,115 @@
+# ~/.config/sway/config
+
+# --- 基础设置 ---
+set $mod Mod4
+font pango:"JetBrains Mono Nerd Font" 10
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders --i3 smart
+gaps inner 10
+gaps outer 5
+# --- 自启动 (Exec) ---
+# 注意：如果 swaync 报错，请确保先执行第二步解决冲突
+exec --no-startup-id swaync
+exec --no-startup-id waypaper --restore
+exec --no-startup-id waybar
+exec --no-startup-id bash -c "sleep 3; mpd /home/kagurazaka-shion/.config/mpd/mpd.conf"
+exec --no-startup-id fcitx5
+exec --no-startup-id /home/kagurazaka-shion/.config/sway/alternating_layouts.py
+exec --no-startup-id nm-applet
+exec --no-startup-id clash-verge
+exec systemctl --user import-environment XDG_SESSION_TYPE=wayland
+exec systemctl --user import-environment XDG_CURRENT_DESKTOP=sway
+exec systemctl --user start xdg-desktop-portal-wlr
+exec systemctl --user start xdg-desktop-portal
+exec export QT_QPA_PLATFORM=wayland
+exec export GDK_BACKEND=wayland
+exec export XDG_SESSION_TYPE=wayland
+exec export XDG_CURRENT_DESKTOP=sway
+# 启动密钥环
+exec gnome-keyring-daemon --start --components=secrets
+# 设置 SSH 代理环境变量 (Fractal 主要需要 secrets 组件，但带上 ssh 也没坏处)
+exec export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/keyring/ssh
+# 启动 Polkit 认证代理 (用于处理密钥环解锁弹窗)
+exec /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# --- 输入设备 ---
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+}
+
+# --- 应用程序启动绑定 ---
+bindsym $mod+q exec ghostty
+bindsym $mod+r exec ghostty -e "rmpc"
+bindsym $mod+n exec ghostty -e "nvim"
+bindsym $mod+w exec waypaper
+bindsym Control+$mod+w exec waypaper --random
+bindsym $mod+d exec rofi -show drun
+# 单行命令
+bindsym $mod+l exec /home/kagurazaka-shion/.local/bin/swaylock-awww
+bindsym $mod+z exec zen
+bindsym $mod+Shift+r exec systemctl --user restart pipewire wireplumber xdg-desktop-portal xdg-desktop-portal-wlr
+bindsym $mod+e exec nautilus
+bindsym End exec wlogout
+# --- 工作区切换 ---
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+# 移动窗口到其他工作区
+bindsym Control+$mod+1 move container to workspace number 1
+bindsym Control+$mod+2 move container to workspace number 2
+bindsym Control+$mod+3 move container to workspace number 3
+bindsym Control+$mod+4 move container to workspace number 4
+bindsym Control+$mod+5 move container to workspace number 5
+bindsym Control+$mod+6 move container to workspace number 6
+bindsym Control+$mod+7 move container to workspace number 7
+bindsym Control+$mod+8 move container to workspace number 8
+bindsym Control+$mod+9 move container to workspace number 9
+bindsym Control+$mod+0 move container to workspace number 10
+
+# --- 窗口操作 ---
+bindsym $mod+v floating toggle
+floating_modifier $mod normal
+bindsym $mod+F5 pkill waybar; sleep 0.5; waybar &
+
+# --- 改变平铺模式 ---
+bindsym $mod+h layout toggle split
+bindsym $mod+t layout tabbed
+bindsym $mod+s layout stacking
+
+# --- 其他常用绑定 ---
+bindsym $mod+c kill
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+c reload
+# bindsym $mod+Shift+r restart
+bindsym $mod+m exec swaymsg exit
+# 1. 区域截图 (Mod + Print)
+# 逻辑：slurp 选择区域 -> grim 截图 -> wl-copy 复制到剪贴板 -> notify-send 通知
+bindsym $mod+Print exec grim -g "$(slurp)" - | wl-copy && notify-send "截图完成喵！" "区域截图已经给你放到剪贴板了喵！"
+for_window [app_id="waypaper"] floating enable
+# 2. 全屏截图 (仅 Print)
+# 逻辑：grim 截取全屏 -> wl-copy 复制到剪贴板 -> notify-send 通知
+bindsym Print exec grim - | wl-copy && notify-send "截图完成喵！" "全屏截图已经给你放到剪贴板了喵！"
+# 【重要】已移除 colors 块，避免语法错误。
+# Sway 将使用默认颜色，界面美化主要由 Waybar 和 Swaylock 负责。
+blur enable
+blur_passes 3
+# blur_size 5
+blur_saturation 1.2 
+corner_radius 14

@@ -1,0 +1,33 @@
+# This file contains fish universal variable definitions.
+# VERSION: 3.0
+SETUVAR --export FZF_DEFAULT_OPTS:\x20\x20\x2d\x2dcolor\x3dbg\x2b\x3a\x23413738\x2cbg\x3a\x23191113\x2cspinner\x3a\x23ecbe91\x2chl\x3a\x23ffb1c0\x20\x20\x20\x2d\x2dcolor\x3dfg\x3a\x23efdee0\x2cheader\x3a\x23ffb1c0\x2cinfo\x3a\x23ecbe91\x2cpointer\x3a\x23efdee0\x20\x20\x20\x2d\x2dcolor\x3dmarker\x3a\x23ffb4ab\x2cfg\x2b\x3a\x23efdee0\x2cprompt\x3a\x23ffb1c0\x2chl\x2b\x3a\x23ffb1c0\x20\x20\x20\x2d\x2dcolor\x3dselected\x2dbg\x3a\x23413738\x20\x20\x20\x2d\x2dmulti
+SETUVAR __fish_initialized:4300
+SETUVAR _fisher_jorgebucaran_2F_fisher_files:\x7e/\x2econfig/fish/functions/fisher\x2efish\x1e\x7e/\x2econfig/fish/completions/fisher\x2efish
+SETUVAR _fisher_plugins:jorgebucaran/fisher
+SETUVAR _fisher_upgraded_to_4_4:\x1d
+SETUVAR fish_color_autosuggestion:efdee0
+SETUVAR fish_color_cancel:efdee0
+SETUVAR fish_color_command:ffb1c0
+SETUVAR fish_color_comment:efdee0
+SETUVAR fish_color_cwd:efdee0
+SETUVAR fish_color_end:e4bdc3
+SETUVAR fish_color_error:ffb4ab
+SETUVAR fish_color_escape:2c1700
+SETUVAR fish_color_gray:413738
+SETUVAR fish_color_host:efdee0
+SETUVAR fish_color_host_remote:efdee0
+SETUVAR fish_color_keyword:ffdcbc
+SETUVAR fish_color_normal:efdee0
+SETUVAR fish_color_operator:ffdcbc
+SETUVAR fish_color_option:413738
+SETUVAR fish_color_param:ecbe91
+SETUVAR fish_color_quote:efdee0
+SETUVAR fish_color_redirection:ecbe91
+SETUVAR fish_color_search_match:\x2d\x2dbackground\x3d9f8c8f
+SETUVAR fish_color_selection:\x2d\x2dbackground\x3d9f8c8f
+SETUVAR fish_color_status:efdee0
+SETUVAR fish_color_user:efdee0
+SETUVAR fish_pager_color_completion:ffb1c0
+SETUVAR fish_pager_color_description:413738
+SETUVAR fish_pager_color_prefix:ecbe91
+SETUVAR fish_pager_color_progress:ffb1c0

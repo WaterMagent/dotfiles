@@ -1,0 +1,86 @@
+[manager]
+cwd = { fg = "#e4bdc3", bold = true }
+
+hovered = { fg = "#ffd9df", bg = "#713342" }
+preview_hovered = { underline = true, bold = true }
+
+find_keyword = { fg = "#e4bdc3", italic = true }
+find_position = { fg = "#ecbe91", bg = "reset", italic = true }
+
+
+border_symbol = "│"
+border_style = { fg = "#ffb1c0" }
+
+syntect_theme = "~/.config/yazi/Catppuccin-latte.tmTheme"
+
+[mode]
+normal_main = { fg = "#551d2c", bg = "#ffb1c0", bold = true }
+normal_alt = { fg = "#713342", bg = "#efdee0" }
+
+select_main = { fg = "#43292e", bg = "#e4bdc3", bold = true }
+select_alt = { fg = "#5b3f44", bg = "#efdee0" }
+
+unset_main = { fg = "#462a08", bg = "#ecbe91", bold = true }
+unset_alt = { fg = "#5f401d", bg = "#efdee0" }
+
+[status]
+sep_left = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+perm_type = { fg = "#ffb1c0" }
+perm_read = { fg = "#f5bd6f" }
+perm_write = { fg = "#b8c4ff" }
+perm_exec = { fg = "#ffb1c2" }
+perm_sep = { fg = "#efdee0" }
+
+[which]
+mask = { bg = "#261d1f" }
+cand = { fg = "#ffb1c0" }
+rest = { bg = "#261d1f" }
+desc = { fg = "#e4bdc3" }
+separator = "  "
+separator_style = { fg = "#ecbe91" }
+
+[tabs]
+active = { bg = "#ffb1c0", fg = "#551d2c", bold = true }
+inactive = { bg = "#191113", fg = "#ffb1c0", bold = true }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
+
+
+[notify]
+title_info = { fg = "#b1d18a" }
+title_warn = { fg = "#f5bd6f" }
+title_error = { fg = "#ffb4ab" }
+
+[filetype]
+rules = [
+  # Images
+  { mime = "image/*", fg = "#e4bdc3" },
+
+  # Videos
+  { mime = "video/*", fg = "#ecbe91" },
+  { mime = "audio/*", fg = "#ecbe91" },
+
+  # Archives
+  { mime = "application/zip", fg = "#ffb4ab" },
+  { mime = "application/gzip", fg = "#ffb4ab" },
+  { mime = "application/x-tar", fg = "#ffb4ab" },
+  { mime = "application/x-bzip", fg = "#ffb4ab" },
+  { mime = "application/x-bzip2", fg = "#ffb4ab" },
+  { mime = "application/x-7z-compressed", fg = "#ffb4ab" },
+  { mime = "application/x-rar", fg = "#ffb4ab" },
+
+  # Fallback
+  { name = "*", fg = "#ffb1c0", bold = true },
+  { name = "*/", fg = "#e4bdc3", bold = true },
+]
+[[plugin.prepend_fetchers]]
+id = "git"
+name = "*"
+run = "git"
+
+[[plugin.prepend_fetchers]]
+id = "git"
+name = "*/"
+run = "git"

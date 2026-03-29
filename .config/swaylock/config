@@ -1,0 +1,37 @@
+# ~/.config/swaylock/config
+
+# 外观
+color=1e1e2e
+bs-hl-color=f38ba8
+key-hl-color=a6e3a1
+caps-lock-bs-hl-color=f38ba8
+caps-lock-key-hl-color=a6e3a1
+ring-color=45475a
+ring-clear-color=f38ba8
+ring-ver-color=89b4fa
+ring-wrong-color=f38ba8
+inside-color=00000000
+inside-clear-color=00000000
+inside-ver-color=00000000
+inside-wrong-color=00000000
+text-color=cdd6f4
+text-clear-color=f38ba8
+text-ver-color=89b4fa
+text-wrong-color=f38ba8
+separator-color=00000000
+
+# 行为
+ignore-empty-password
+show-failed-attempts
+daemonize=false
+lock-on-startup=false
+
+# 字体
+font=Maple Mono NF
+line-uses-inside
+radius=20
+scaling=fill
+indicator-radius=100
+indicator-thickness=10
+effect-blur 10x8
+effect-vignette=0.5:0.5

@@ -1,0 +1,84 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 30,
+  "modules-left": ["clock", "custom/sysinfo"],
+  "modules-center": ["sway/workspaces"],
+  "modules-right": ["tray", "backlight", "pulseaudio", "custom/power"],
+  
+  "clock": {
+    "format": "{:%H:%M %Y-%m-%d}",
+    "tooltip": true
+  },
+
+  "custom/sysinfo": {
+    "exec": "echo \" $(top -bn1 | grep 'Cpu(s)' | awk '{print $2}' | cut -d'%' -f1)% | temp $(sensors | grep 'Tctl' | awk '{print $2}') | memory $(free -h | grep Mem | awk '{print $3/$2 * 100.0}' | xargs printf '%.0f')%\"",
+    "interval": 5,
+    "tooltip": false
+  },
+
+  "sway/workspaces": {
+    "disable-scroll": true,
+    "all-outputs": true,
+    "format": "{icon}",
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "urgent": "!",
+      "focused": "●",
+      "default": "○"
+    }
+  },
+  "custom/wf-recorder": {
+      "format": "{}",
+      "exec": "~/.config/sway/scripts/wf-recorder.sh waybar",
+      "return-type": "json",
+      "interval": 1,
+      "on-click": "~/.config/sway/scripts/wf-recorder.sh toggle",
+      "on-click-right": "~/.config/sway/scripts/wf-recorder.sh settings",
+      "tooltip": true
+  },
+  // 添加样式类，方便在 style.css 中美化
+  "custom/wf-recorder-recording": {
+      "format": "{}",
+      "exec": "~/.config/sway/scripts/wf-recorder.sh waybar",
+      "return-type": "json",
+      "interval": 1
+  },
+  "tray": {
+    "icon-size": 18,
+    "spacing": 10
+  },
+
+  "backlight": {
+    "device": "intel_backlight", 
+    "format": "{icon} {percent}%",
+    "format-icons": ["", "", "", "", "", "", "", "", ""]
+  },
+
+  "pulseaudio": {
+    "scroll-step": 5,
+    "format": "{icon} {volume}%",
+    "format-bluetooth": "{icon} {volume}%",
+    "format-muted": " Muted",
+    "format-icons": {
+      "headphone": "",
+      "hands-free": "",
+      "headset": "",
+      "phone": "",
+      "portable": "",
+      "car": "",
+      "default": ["", "", ""]
+    },
+    "on-click": "pavucontrol"
+  },
+
+  "custom/power": {
+    "format": "⏻",
+    "on-click": "wlogout",
+    "tooltip": false
+  }
+}

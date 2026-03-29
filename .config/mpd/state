@@ -1,0 +1,41 @@
+sw_volume: 100
+audio_device_state:1:PipeWire Sound Server
+audio_device_state:1:Visualizer feed
+state: pause
+current: 22
+time: 228.186
+random: 0
+repeat: 1
+single: 1
+consume: 0
+crossfade: 0
+mixrampdb: 0
+mixrampdelay: -1
+lastloadedplaylist: 
+playlist_begin
+0:系ぎて - Rintaro Soma.mp3
+1:Singularity - ETIA..mp3
+2:Cross†Soul (feat. Syepias) - HyuN, Syepias.mp3
+3:Disorder (feat. YURI) - HyuN, yuri.mp3
+4:crystallized - かめりあ.mp3
+5:KIZUNA Resolution - TAG.mp3
+6:ALTER EGO - Yuta Imai, Qlarabelle.mp3
+7:sølips - Rintaro Soma.mp3
+8:Axium Crisis - ak+q.mp3
+9:QQ - PHQUASE, ZAQUVA.mp3
+10:QQ - PHQUASE, ZAQUVA.mp3
+11:桜流し (2021 Remastered) - 宇多田ヒカル.mp3
+12:obj_wo3DlMOGwrbDjj7DisKw_55412259350_9b2f_175a_9155_e2a84751ee8f0e0b0e65e2708c84ba66.mp3
+13:obj_wo3DlMOGwrbDjj7DisKw_45911473840_d603_5ec5_1399_2788ee2eb943442fc53c13bf33469fa2.mp3
+14:obj_wo3DlMOGwrbDjj7DisKw_45910229565_a297_26a7_559d_38c8fe3bbdc7837b7d65506013997319.mp3
+15:Lilly - Juggernaut..mp3
+16:Parallel Universe Shifter - かめりあ.mp3
+17:化孵化 - 可不, sasakure.UK.mp3
+18:マーシャル・マキシマイザー - 可不, 柊マグネタイト.mp3
+19:Quon - DJ Noriken.mp3
+20:Cryogenic (feat. Petra Gurin) - かめりあ, Petra Gurin.mp3
+21:Xaleid◆scopiX - xi.mp3
+22:AFTER PANDORA - 削除.mp3
+23:World's end BLACKBOX - 打打だいず.mp3
+24:World's end loneliness - 打打だいず.mp3
+playlist_end

@@ -1,0 +1,6 @@
+# ~/.local/bin/swaylock-awww
+#!/bin/bash
+
+#!/bin/bash
+wallpaper=$(awww query | sed -n 's/.*image: \(.*\)/\1/p' | head -1)
+exec swaylock --image "$wallpaper" --effect-blur 10x8 --effect-vignette 0.5:0.5
