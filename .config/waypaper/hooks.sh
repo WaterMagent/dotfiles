@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 # ==============================================================================
-# Waypaper Hook: Ultimate Stable Version (Fixed Nautilus + Waybar)
+# Waypaper Hook: Ultimate Stable Version (Fixed Nautilus + Waybar + Rofi)
 # 策略：
 # 1. 尝试直接运行 matugen (带超时)
 # 2. 如果失败，使用纯 Python 脚本提取颜色 (无需终端，永不卡死)
-# 3. 应用 GTK、Sway 和 Waybar 配色
-# 4. 强制使用浅色系文字和控件颜色
+# 3. 应用 GTK、Sway、Waybar 和 Rofi 配色
 # ==============================================================================
 
 MATUGEN_BIN="/usr/bin/matugen"
@@ -74,6 +73,17 @@ def lighten_color(hex_color, percent):
     b = min(255, b + (255 - b) * percent // 100)
     return '#{:02x}{:02x}{:02x}'.format(r, g, b)
 
+def darken_color(hex_color, percent):
+    """将颜色变暗"""
+    hex_color = hex_color.lstrip('#')
+    r = int(hex_color[0:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+    r = max(0, r * (100 - percent) // 100)
+    g = max(0, g * (100 - percent) // 100)
+    b = max(0, b * (100 - percent) // 100)
+    return '#{:02x}{:02x}{:02x}'.format(r, g, b)
+
 def get_colors(path):
     try:
         img = Image.open(path).convert('RGB')
@@ -96,11 +106,9 @@ def get_colors(path):
         primary_raw = to_hex(avg_r, avg_g, avg_b)
         
         # 强制将主色变亮到浅色系（亮度 > 180）
-        # 先计算当前亮度
         brightness = (avg_r * 0.299 + avg_g * 0.587 + avg_b * 0.114)
         
         if brightness < 180:
-            # 太暗了，需要提亮
             lighten_percent = int((180 - brightness) / 255 * 100)
             lighten_percent = min(80, max(30, lighten_percent))
             primary = lighten_color(primary_raw, lighten_percent)
@@ -119,16 +127,28 @@ def get_colors(path):
         if bg_r < 10 and bg_g < 10 and bg_b < 10:
             bg_r, bg_g, bg_b = 20, 20, 25
         background = to_hex(bg_r, bg_g, bg_b)
-
-        # 文字颜色：统一用浅色（不用壁纸判断）
-        text = '#e4e1e9'  # 浅灰白
+        
+        # 背景备用色（稍亮一点，用于 Rofi 等）
+        background_alt = lighten_color(background, 8)
+        
+        # 文字颜色：统一用浅色
+        text = '#c0caf5'  # 浅灰蓝
+        
+        # 选中/激活颜色：使用主色
+        selected = primary
+        
+        # 紧急颜色：红色系（固定）
+        urgent = '#f7768e'
 
         result = {
             "colors": {
                 "primary": {"default": {"color": primary}},
                 "secondary": {"default": {"color": secondary}},
                 "background": {"default": {"color": background}},
-                "on_background": {"default": {"color": text}}
+                "background_alt": {"default": {"color": background_alt}},
+                "on_background": {"default": {"color": text}},
+                "selected": {"default": {"color": selected}},
+                "urgent": {"default": {"color": urgent}}
             }
         }
         print(json.dumps(result))
@@ -151,7 +171,10 @@ fi
 PRIMARY=$(echo "$COLORS_JSON" | $JQ_BIN -r '.colors.primary.default.color' 2>/dev/null)
 SECONDARY=$(echo "$COLORS_JSON" | $JQ_BIN -r '.colors.secondary.default.color' 2>/dev/null)
 BG=$(echo "$COLORS_JSON" | $JQ_BIN -r '.colors.background.default.color' 2>/dev/null)
+BG_ALT=$(echo "$COLORS_JSON" | $JQ_BIN -r '.colors.background_alt.default.color' 2>/dev/null)
 TEXT=$(echo "$COLORS_JSON" | $JQ_BIN -r '.colors.on_background.default.color' 2>/dev/null)
+SELECTED=$(echo "$COLORS_JSON" | $JQ_BIN -r '.colors.selected.default.color' 2>/dev/null)
+URGENT=$(echo "$COLORS_JSON" | $JQ_BIN -r '.colors.urgent.default.color' 2>/dev/null)
 
 # 兼容旧结构
 if [ -z "$PRIMARY" ] || [ "$PRIMARY" == "null" ]; then
@@ -161,21 +184,28 @@ if [ -z "$PRIMARY" ] || [ "$PRIMARY" == "null" ]; then
     TEXT=$(echo "$COLORS_JSON" | $JQ_BIN -r '.on_background.default' 2>/dev/null)
 fi
 
-# 确保有副色
+# 设置默认值
+if [ -z "$BG_ALT" ] || [ "$BG_ALT" == "null" ]; then
+    BG_ALT=$(lighten_color "$BG" 8)
+fi
+if [ -z "$SELECTED" ] || [ "$SELECTED" == "null" ]; then
+    SELECTED="$PRIMARY"
+fi
+if [ -z "$URGENT" ] || [ "$URGENT" == "null" ]; then
+    URGENT="#f7768e"
+fi
 if [ -z "$SECONDARY" ] || [ "$SECONDARY" == "null" ]; then
     SECONDARY="$PRIMARY"
 fi
-
-# 确保文字颜色是浅色
 if [ -z "$TEXT" ] || [ "$TEXT" == "null" ]; then
-    TEXT="#e4e1e9"
+    TEXT="#c0caf5"
 fi
 
 if [ -z "$PRIMARY" ] || [ -z "$BG" ]; then
     echo "ERR: Color extraction failed. P=$PRIMARY B=$BG" >> "$LOG_FILE"
     exit 1
 fi
-echo "Colors: P=$PRIMARY, S=$SECONDARY, B=$BG, T=$TEXT" >> "$LOG_FILE"
+echo "Colors: P=$PRIMARY, S=$SECONDARY, B=$BG, BA=$BG_ALT, T=$TEXT, SEL=$SELECTED" >> "$LOG_FILE"
 
 # --- 计算变暗颜色 ---
 darken_color() {
@@ -194,18 +224,57 @@ darken_color() {
     printf '#%02x%02x%02x' $r $g $b
 }
 
+lighten_color() {
+    local hex=$1
+    local percent=$2
+    hex=${hex#\#}
+    local r=$((16#${hex:0:2}))
+    local g=$((16#${hex:2:2}))
+    local b=$((16#${hex:4:2}))
+    r=$((r + (255 - r) * percent / 100))
+    g=$((g + (255 - g) * percent / 100))
+    b=$((b + (255 - b) * percent / 100))
+    printf '#%02x%02x%02x' $r $g $b
+}
+
 BG_DIM=$(darken_color "$BG" 20)
-PRIMARY_DIM=$(darken_color "$PRIMARY" 30)
 
 # waybar 背景：半透明深色
 WAYBAR_BG="rgba(20, 20, 30, 0.85)"
-# 模块背景：半透明深色
 MODULE_BG="rgba(35, 35, 50, 0.75)"
 
 echo "Dim colors: BG_DIM=$BG_DIM" >> "$LOG_FILE"
 
 # ==============================================================================
-# 4. 生成 Waybar CSS (使用浅色主色作为文字和控件颜色)
+# 4. 生成 Rofi 配色 (.rasi 格式)
+# ==============================================================================
+ROFI_COLORS_DIR="$HOME/.config/rofi/shared"
+ROFI_COLORS_FILE="$ROFI_COLORS_DIR/colors.rasi"
+
+mkdir -p "$ROFI_COLORS_DIR"
+
+# 生成 Rofi 配色文件
+cat > "$ROFI_COLORS_FILE" << ROFIEOF
+/**
+ * Auto-generated by waypaper hook - DO NOT EDIT
+ * Rofi color scheme based on wallpaper
+ */
+
+* {
+    background:      ${BG};
+    background-alt:  ${BG_ALT};
+    border:          ${PRIMARY};
+    foreground:      ${TEXT};
+    selected:        ${SELECTED};
+    active:          ${SECONDARY};
+    urgent:          ${URGENT};
+}
+ROFIEOF
+
+echo "Rofi colors generated at $ROFI_COLORS_FILE" >> "$LOG_FILE"
+
+# ==============================================================================
+# 5. 生成 Waybar CSS
 # ==============================================================================
 WAYBAR_CSS_DIR="$HOME/.config/waybar"
 WAYBAR_CSS="$WAYBAR_CSS_DIR/style.css"
@@ -218,9 +287,11 @@ cat > "$WAYBAR_COLORS_CSS" << CSSEOF
 /* Auto-generated by waypaper hook - DO NOT EDIT */
 @define-color primary $PRIMARY;
 @define-color secondary $SECONDARY;
-@define-color primary_dim $PRIMARY_DIM;
 @define-color background $BG;
+@define-color background_alt $BG_ALT;
 @define-color text $TEXT;
+@define-color selected $SELECTED;
+@define-color urgent $URGENT;
 @define-color background_dim $BG_DIM;
 @define-color waybar_bg $WAYBAR_BG;
 @define-color module_bg $MODULE_BG;
@@ -235,7 +306,7 @@ cat > "$WAYBAR_CSS" << 'CSSEOF'
 * {
     border: none;
     border-radius: 0;
-    font-family: "JetBrains Mono Nerd Font", "HYLeMiaoTiJ", sans-serif;
+    font-family: "Maple Mono NF", "Noto Sans CJK SC", "JetBrains Mono Nerd Font", monospace;
     font-size: 14px;
     min-height: 0;
     margin: 0;
@@ -283,7 +354,7 @@ window#waybar {
     transition: all 0.3s ease;
 }
 
-/* 录制中状态 - 保持红色醒目 */
+/* 录制中状态 */
 #custom-wf-recorder.recording {
     background-color: #ff5555;
     color: #ffffff;
@@ -330,7 +401,7 @@ window#waybar {
     background-color: @module_bg;
 }
 
-/* 电源按钮悬停效果 - 使用主色辉光 */
+/* 电源按钮悬停效果 */
 #custom-power:hover {
     background-color: @primary;
     color: @background;
@@ -377,13 +448,13 @@ window#waybar {
 
 /* 系统信息模块 */
 #custom-sysinfo {
-    font-family: "JetBrains Mono Nerd Font", monospace;
+    font-family: "Maple Mono", "JetBrains Mono Nerd Font", monospace;
 }
 CSSEOF
 
 echo "Waybar CSS generated" >> "$LOG_FILE"
 
-# 重启 waybar 使配色生效
+# 重启 waybar
 if pgrep -x waybar > /dev/null; then
     killall waybar
     sleep 0.5
@@ -392,7 +463,7 @@ if pgrep -x waybar > /dev/null; then
 fi
 
 # ==============================================================================
-# 5. 生成 GTK CSS
+# 6. 生成 GTK CSS
 # ==============================================================================
 GTK3_DIR="$HOME/.config/gtk-3.0"
 GTK4_DIR="$HOME/.config/gtk-4.0"
@@ -413,7 +484,7 @@ GTK_CONTENT="
 @define-color headerbar_fg_color $TEXT;
 @define-color view_bg_color $BG;
 @define-color view_fg_color $TEXT;
-@define-color selected_bg_color $PRIMARY;
+@define-color selected_bg_color $SELECTED;
 @define-color selected_fg_color $BG;
 @define-color sidebar_bg_color $BG;
 @define-color sidebar_fg_color $TEXT;
@@ -463,12 +534,12 @@ sidebar:backdrop, .sidebar:backdrop {
 }
 
 sidebar row:selected, .sidebar row:selected {
-    background-color: $PRIMARY;
+    background-color: $SELECTED;
     color: $BG;
 }
 
 list row:selected {
-    background-color: $PRIMARY;
+    background-color: $SELECTED;
     color: $BG;
 }
 
@@ -481,7 +552,7 @@ list row:selected {
 }
 
 .nautilus-window .sidebar row:selected {
-    background-color: $PRIMARY;
+    background-color: $SELECTED;
     color: $BG;
 }
 "
@@ -500,12 +571,12 @@ done
 echo "GTK CSS Updated" >> "$LOG_FILE"
 
 # ==============================================================================
-# 6. 更新 Sway 边框
+# 7. 更新 Sway 边框
 # ==============================================================================
 echo "Updating Sway..." >> "$LOG_FILE"
 if command -v swaymsg &> /dev/null; then
     if [ -n "$SWAYSOCK" ] || pgrep -x sway > /dev/null; then
-        $SWAYMSG_BIN client.focused "$PRIMARY" "$BG" "$TEXT" "$PRIMARY" "$PRIMARY" >> "$LOG_FILE" 2>&1
+        $SWAYMSG_BIN client.focused "$SELECTED" "$BG" "$TEXT" "$SELECTED" "$SELECTED" >> "$LOG_FILE" 2>&1
         $SWAYMSG_BIN client.unfocused "#333333" "$BG_DIM" "$TEXT" "#333333" "#333333" >> "$LOG_FILE" 2>&1
         echo "Sway Updated" >> "$LOG_FILE"
     else
