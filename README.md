@@ -3,6 +3,7 @@ A simple swayfx configs
 run:  
 ```bash
 paru -S --noconfirm \
+    matugen \
     swayfx \
     waypaper \
     cava \
