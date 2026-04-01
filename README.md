@@ -9,6 +9,8 @@ paru -S --noconfirm \
     cava \
     rmpc \
     go-musicfox \
+    mpd \
+    lq \
     waybar \
     rofi \
     ghostty \
@@ -38,10 +40,6 @@ paru -S --noconfirm \
     wlogout \
     pavucontrol \
     clash-verge
-
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"  
-
-git clone https://github.com/zsh-users/zsh-autosuggestions.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-autosuggestions
-
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${HOME}/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 ```

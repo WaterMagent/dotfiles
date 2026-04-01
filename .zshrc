@@ -2,7 +2,7 @@ export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 plugins=(
   git
-  zsh-autosuggestions
+#  zsh-autosuggestions
   zsh-syntax-highlighting
   z
   history
@@ -33,12 +33,13 @@ git_status_info() {
     fi
 }
 setopt PROMPT_SUBST
-PROMPT='%F{red}[%*]%f ❯ '
+PROMPT='%F{red}[%*]%f %F{#feb0d3}❯%f '
 RPROMPT='%F{208}$(git_status_info)%f%F{green}[%~]%f%F{blue}[%M@%n]%f'
 alias ls='eza --icons'
 alias ll='eza -l --icons'
 alias la='eza -la --icons'
 alias lt='eza --tree --icons'
+alias tile='python ~/.config/sway/alternating_layouts.py'
 function swayrec() {
     local timestamp=$(date +%Y-%m-%d_%H:%M:%S)
     local filename="recording_$timestamp.mkv"
@@ -85,6 +86,8 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 setopt AUTO_CD
 setopt INTERACTIVE_COMMENTS
 if [[ -o login ]] && [[ "$(tty)" == "/dev/tty1" ]] && [[ -z "$WAYLAND_DISPLAY" ]] && [[ -z "$DISPLAY" ]]; then
-    echo "Starting Sway from tty1..."
+    # echo "Starting Sway from tty1..."
     exec sway --unsupported-gpu
 fi
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/keyring/ssh"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
