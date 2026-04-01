@@ -4,62 +4,62 @@
 @define-color accent_bg_color #a1c6bb;
 @define-color accent_fg_color #0e1412;
 @define-color window_bg_color #0e1412;
-@define-color window_fg_color #e4e1e9;
+@define-color window_fg_color #c0caf5;
 @define-color theme_bg_color #0e1412;
-@define-color theme_fg_color #e4e1e9;
+@define-color theme_fg_color #c0caf5;
 @define-color base_color #0e1412;
-@define-color text_color #e4e1e9;
+@define-color text_color #c0caf5;
 @define-color headerbar_bg_color #0e1412;
-@define-color headerbar_fg_color #e4e1e9;
+@define-color headerbar_fg_color #c0caf5;
 @define-color view_bg_color #0e1412;
-@define-color view_fg_color #e4e1e9;
+@define-color view_fg_color #c0caf5;
 @define-color selected_bg_color #a1c6bb;
 @define-color selected_fg_color #0e1412;
 @define-color sidebar_bg_color #0e1412;
-@define-color sidebar_fg_color #e4e1e9;
+@define-color sidebar_fg_color #c0caf5;
 @define-color popover_bg_color #0e1412;
-@define-color popover_fg_color #e4e1e9;
+@define-color popover_fg_color #c0caf5;
 
 /* 失焦状态 */
 @define-color backdrop_window_bg_color #0b100e;
-@define-color backdrop_window_fg_color #e4e1e9;
+@define-color backdrop_window_fg_color #c0caf5;
 @define-color backdrop_theme_bg_color #0b100e;
-@define-color backdrop_theme_fg_color #e4e1e9;
+@define-color backdrop_theme_fg_color #c0caf5;
 @define-color backdrop_base_color #0b100e;
-@define-color backdrop_text_color #e4e1e9;
+@define-color backdrop_text_color #c0caf5;
 @define-color backdrop_headerbar_bg_color #0b100e;
-@define-color backdrop_headerbar_fg_color #e4e1e9;
+@define-color backdrop_headerbar_fg_color #c0caf5;
 @define-color backdrop_sidebar_bg_color #0b100e;
-@define-color backdrop_sidebar_fg_color #e4e1e9;
+@define-color backdrop_sidebar_fg_color #c0caf5;
 
 window.background { 
     background-color: #0e1412; 
-    color: #e4e1e9; 
+    color: #c0caf5; 
 }
 
 window.background:backdrop {
     background-color: #0b100e;
-    color: #e4e1e9;
+    color: #c0caf5;
 }
 
 headerbar { 
     background-color: #0e1412; 
-    color: #e4e1e9; 
+    color: #c0caf5; 
 }
 
 headerbar:backdrop {
     background-color: #0b100e;
-    color: #e4e1e9;
+    color: #c0caf5;
 }
 
 sidebar, .sidebar, .sidebar-pane, .sidebar-view {
     background-color: #0e1412;
-    color: #e4e1e9;
+    color: #c0caf5;
 }
 
 sidebar:backdrop, .sidebar:backdrop {
     background-color: #0b100e;
-    color: #e4e1e9;
+    color: #c0caf5;
 }
 
 sidebar row:selected, .sidebar row:selected {
