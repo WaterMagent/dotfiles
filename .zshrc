@@ -40,7 +40,7 @@ alias ll='eza -l --icons'
 alias la='eza -la --icons'
 alias lt='eza --tree --icons'
 alias tile='python ~/.config/sway/alternating_layouts.py'
-function swayrec() {
+function rec() {
     local timestamp=$(date +%Y-%m-%d_%H:%M:%S)
     local filename="recording_$timestamp.mkv"
     echo "🎬 开始录屏..."
